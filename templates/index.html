@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head> 
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>LED</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<style>
+		.slidecontainer {
+		    width: 100%;
+		}
+		
+		.slider {
+		    -webkit-appearance: none;
+		    width: 100%;
+		    height: 25px;
+		    background: #d3d3d3;
+		    outline: none;
+		    opacity: 0.7;
+		    -webkit-transition: .2s;
+		    transition: opacity .2s;
+		}
+		
+		.slider:hover {
+		    opacity: 1;
+		}
+		
+		.slider::-webkit-slider-thumb {
+		    -webkit-appearance: none;
+		    appearance: none;
+		    width: 25px;
+		    height: 25px;
+		    background: #ff0000;
+		    cursor: pointer;
+		}
+		
+		.slider::-moz-range-thumb {
+		    width: 25px;
+		    height: 25px;
+		    background: #4CAF50;
+		    cursor: pointer;
+		}
+
+		.slider2 {
+		    -webkit-appearance: none;
+		    width: 100%;
+		    height: 25px;
+		    background: #d3d3d3;
+		    outline: none;
+		    opacity: 0.7;
+		    -webkit-transition: .2s;
+		    transition: opacity .2s;
+		}
+		
+		.slider2:hover {
+		    opacity: 1;
+		}
+
+		.slider2::-webkit-slider-thumb {
+		    -webkit-appearance: none;
+		    appearance: none;
+		    width: 25px;
+		    height: 25px;
+		    background: #009900;
+		    cursor: pointer;
+		}
+		.slider2::-moz-range-thumb {
+		    width: 25px;
+		    height: 25px;
+		    background: #4CAF50;
+		    cursor: pointer;
+		}
+	
+		.slider3 {
+		    -webkit-appearance: none;
+		    width: 100%;
+		    height: 25px;
+		    background: #d3d3d3;
+		    outline: none;
+		    opacity: 0.7;
+		    -webkit-transition: .2s;
+		    transition: opacity .2s;
+		}
+		
+		.slider3:hover {
+		    opacity: 1;
+		}
+		.slider3::-webkit-slider-thumb {
+		    -webkit-appearance: none;
+		    appearance: none;
+		    width: 25px;
+		    height: 25px;
+		    background: #0000ff;
+		    cursor: pointer;
+		}
+		.slider3::-moz-range-thumb {
+		    width: 25px;
+		    height: 25px;
+		    background: #4CAF50;
+		    cursor: pointer;
+		}
+	</style>
+</head>
+
+<body>
+	<div class = "container">
+		<h1>Programmable Night Light</h1>
+		<h3>Drag the sliders to change the intensities of RGB.</h3>
+		<input type="range" min="0" max="100" value="0" class="slider" id="myRangeRed">
+		<p>Red Intensity: <span id="red"></span></p>
+		<input type="range" min="0" max="100" value="0" class="slider2" id="myRangeGreen">
+		<p>Green Intensity: <span id="green"></span></p>
+		<input type="range" min="0" max="100" value="0" class="slider3" id="myRangeBlue">
+		<p>Blue Intensity: <span id="blue"></span></p>
+		<div class = "row">
+			<div class="col-md-4">
+			</div>
+			<div class = "col-md-4 text-center">
+				<button onclick = "btnOn()" class="btn btn-primary" style="margin-bottom:10px">ON</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-4">
+			</div>
+			<div class = "col-md-4 text-center">
+				<button onclick = "btnOff()" class="btn btn-danger" style="margin-bottom:10px">OFF</button>
+			</div>
+			<div class = "col-md-4">
+				<input onclick = "color()" type="checkbox" id="staticCheck">
+				<label for="staticCheck">Static Color</label>
+			</div>
+		</div>
+	</div>
+	<script>
+		var cur_state = 0;
+		var cur_static = 0;
+		var redSlider = document.getElementById("myRangeRed");
+		var redOut = document.getElementById("red");
+		redOut.innerHTML = redSlider.value;
+
+		var greenSlider = document.getElementById("myRangeGreen");
+		var greenOut = document.getElementById("green");
+		greenOut.innerHTML = greenSlider.value;
+
+		var blueSlider = document.getElementById("myRangeBlue");
+		var blueOut = document.getElementById("blue");
+		blueOut.innerHTML = blueSlider.value;
+
+		function postData(){
+		  $.post("/postmethod", {redSlider_data:redSlider.value,
+					blueSlider_data:blueSlider.value,
+					greenSlider_data:greenSlider.value,
+					state:cur_state,
+					static:cur_static});
+		}
+		redSlider.oninput = function() {
+		  redOut.innerHTML = this.value;
+		  postData();
+		}
+		greenSlider.oninput = function() {
+		  greenOut.innerHTML = this.value;
+		  postData();
+		}
+		blueSlider.oninput = function() {
+		  blueOut.innerHTML = this.value;
+		  postData();
+		}
+		function btnOn(){
+		  cur_state = 1;
+		  postData();
+		}
+		function btnOff(){
+		  cur_state = 0;
+		  postData();
+		}
+		function color(){
+		  if (document.getElementById('staticCheck').checked){
+		     cur_static = 1;
+		     postData();
+		  }
+		  else{
+		     cur_static = 0;
+		     postData();
+		  }
+		}
+	</script>
+</body>
+</html>
